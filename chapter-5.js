@@ -3,7 +3,7 @@
  * Brennan Newton
  */
 
-const SCRIPTS = require('./scripts.js');
+const { countBy, characterScript } = require('./chapter-5-higher-order');
 
 // Flattening
 /* Use the reduce method in combination with the concat method to “flatten” an
@@ -76,10 +76,18 @@ function everySome(array, test) {
  * "ltr" (left to right), "rtl" (right to left), or "ttb" (top to bottom).
  */
 function dominantDirection(text) {
-  // Your code here.
+  const directions = countBy(text, char => {
+    const script = characterScript(char.codePointAt(0));
+    return script ? script.direction : 'none';
+  }).filter(({ name }) => name != 'none');
+  // console.log(directions);
+
+  if (directions.length == 0) return 'ltr';
+
+  return directions.reduce((a, b) => (a.count > b.count ? a : b)).name;
 }
 
-console.log(dominantDirection('Hello!'));
+// console.log(dominantDirection('Hello!'));
 // → ltr
-console.log(dominantDirection('Hey, مساء الخير'));
+// console.log(dominantDirection('Hey, مساء الخير'));
 // → rtl
